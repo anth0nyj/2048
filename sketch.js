@@ -1,13 +1,17 @@
 let grid;
 
+function blankGrid() {
+  return [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+  ];
+}
+
 function setup() {
   createCanvas(400, 400);
-  grid = [
-    [0,0,0,0],
-    [0,0,0,0],
-    [0,0,0,0],
-    [0,0,0,0]
-  ];
+  grid = blankGrid();
   addNumber();
   addNumber();
   // console.table(grid);
@@ -43,32 +47,57 @@ function compare(a, b) {
 }
 
 function copyGrid(grid) {
-  let extra = [
-    [0,0,0,0],
-    [0,0,0,0],
-    [0,0,0,0],
-    [0,0,0,0]
-  ];
+  let extra = blankGrid();
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
       extra[i][j] = grid[i][j];
     }
   }
   return extra;
+
+
+}
+
+function flipGrid(grid) {
+  for (let i = 0; i < 4; i++) {
+    grid[i].reverse();
+  }
+}
+
+function rotateGrid(grid) {
+  let newGrid = blankGrid();
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      newGrid[i][j] = grid[j][i];
+    }
+  }
 }
 
 // One "Move"
 function keyPressed() {
-  if (key == ' ') {
+  console.log(keyCode);
+  let flipped = false;
+  if (keyCode === DOWN_ARROW) {
+    // Do nothing
+  } else if (keyCode === UP_ARROW) {
+    flipGrid(grid);
+    flipped = true;
+  } else if (keyCode === RIGHT_ARROW) {
+    grid = rotateGrid(grid);
+  }
 
-    let past = copyGrid(grid);
-    for (let i = 0; i < 4; i++) {
-      grid[i] = operate(grid[i]);
-    }
-    let changed = compare(past, grid);
-    if (changed) {
-      addNumber();
-    }
+  let past = copyGrid(grid);
+  for (let i = 0; i < 4; i++) {
+    grid[i] = operate(grid[i]);
+  }
+  let changed = compare(past, grid);
+
+  if (flipped) {
+    flipGrid(grid);
+  }
+
+  if (changed) {
+    addNumber();
   }
 }
 
@@ -98,10 +127,10 @@ function slide(row) {
 function combine(row) {
   for (let i = 3; i >= 1; i--) {
     let a = row[i];
-    let b = row[i-1];
+    let b = row[i - 1];
     if (a == b) {
       row[i] = a + b;
-      row[i-1] = 0;
+      row[i - 1] = 0;
     }
   }
   return row;
