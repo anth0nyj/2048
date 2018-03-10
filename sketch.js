@@ -1,4 +1,5 @@
 let grid;
+let score = 0;
 
 function blankGrid() {
   return [
@@ -131,6 +132,7 @@ function operate(row) {
 function draw() {
   background(255);
   drawGrid();
+  select('#score').html(score);
 }
 
 // Making new array
@@ -150,6 +152,7 @@ function combine(row) {
     let b = row[i - 1];
     if (a == b) {
       row[i] = a + b;
+      score += row[i];
       row[i - 1] = 0;
     }
   }
