@@ -62,6 +62,7 @@ function flipGrid(grid) {
   for (let i = 0; i < 4; i++) {
     grid[i].reverse();
   }
+  return grid;
 }
 
 function rotateGrid(grid) {
@@ -71,33 +72,52 @@ function rotateGrid(grid) {
       newGrid[i][j] = grid[j][i];
     }
   }
+  return newGrid;
 }
 
 // One "Move"
 function keyPressed() {
   console.log(keyCode);
   let flipped = false;
-  if (keyCode === DOWN_ARROW) {
+  let rotated = false;
+  let played = true;
+  if (keyCode === DOWN_ARROW || keyCode === 83) {
     // Do nothing
-  } else if (keyCode === UP_ARROW) {
-    flipGrid(grid);
+  } else if (keyCode === UP_ARROW || keyCode === 87) {
+    grid = flipGrid(grid);
     flipped = true;
-  } else if (keyCode === RIGHT_ARROW) {
+  } else if (keyCode === RIGHT_ARROW || keyCode === 68) {
     grid = rotateGrid(grid);
+    rotated = true;
+  } else if (keyCode === LEFT_ARROW || keyCode === 65) {
+    grid = rotateGrid(grid);
+    grid = flipGrid(grid);
+    rotated = true;
+    flipped = true;
+  } else {
+    played = false;
   }
 
-  let past = copyGrid(grid);
-  for (let i = 0; i < 4; i++) {
-    grid[i] = operate(grid[i]);
-  }
-  let changed = compare(past, grid);
+  if (played) {
+    let past = copyGrid(grid);
+    for (let i = 0; i < 4; i++) {
+      grid[i] = operate(grid[i]);
+    }
+    let changed = compare(past, grid);
 
-  if (flipped) {
-    flipGrid(grid);
-  }
+    if (flipped) {
+      grid = flipGrid(grid);
+    }
 
-  if (changed) {
-    addNumber();
+    if (rotated) {
+      grid = rotateGrid(grid);
+      grid = rotateGrid(grid);
+      grid = rotateGrid(grid);
+    }
+
+    if (changed) {
+      addNumber();
+    }
   }
 }
 
