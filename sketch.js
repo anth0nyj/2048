@@ -31,14 +31,45 @@ function addNumber() {
   grid[spot.x][spot.y] = r > 0.5 ? 2 : 4;
 }
 
-// One "Move"
-function keyPressed() {
-  if (key == " ") {
-    for (let i = 0; i < 4; i++) {
-      row = operate(row);
+function compare(a, b) {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (a[i][j] !== b[i][j]) {
+        return true;
+      }
     }
   }
-  addNumber();
+  return false;
+}
+
+function copyGrid(grid) {
+  let extra = [
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0],
+    [0,0,0,0]
+  ];
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      extra[i][j] = grid[i][j];
+    }
+  }
+  return extra;
+}
+
+// One "Move"
+function keyPressed() {
+  if (key == ' ') {
+
+    let past = copyGrid(grid);
+    for (let i = 0; i < 4; i++) {
+      grid[i] = operate(grid[i]);
+    }
+    let changed = compare(past, grid);
+    if (changed) {
+      addNumber();
+    }
+  }
 }
 
 function operate(row) {
@@ -71,7 +102,6 @@ function combine(row) {
     if (a == b) {
       row[i] = a + b;
       row[i-1] = 0;
-      break;
     }
   }
   return row;
