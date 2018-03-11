@@ -1,6 +1,34 @@
 let grid;
 let score = 0;
 
+function isGameWon() {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (grid[i][j] === 2048) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function isGameOver() {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      if (grid[i][j] == 0) {
+        return false;
+      }
+      if (i !== 3 && grid[i][j] === grid[i+1][j]) {
+        return false;
+      }
+      if (j !== 3 && grid[i][j] === grid[i][j+1]) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 function blankGrid() {
   return [
     [0, 0, 0, 0],
@@ -12,9 +40,11 @@ function blankGrid() {
 
 function setup() {
   createCanvas(400, 400);
+  noLoop();
   grid = blankGrid();
   addNumber();
   addNumber();
+  updateCanvas();
   // console.table(grid);
 }
 
@@ -30,11 +60,13 @@ function addNumber() {
       }
     }
   }
-  if (options.length > 0);
-  let spot = random(options)
-  let r = random(1);
-  grid[spot.x][spot.y] = r > 0.5 ? 2 : 4;
+  if (options.length > 0) {
+    let spot = random(options)
+    let r = random(1);
+    grid[spot.x][spot.y] = r > 0.5 ? 2 : 4;
+  }
 }
+
 
 function compare(a, b) {
   for (let i = 0; i < 4; i++) {
@@ -78,7 +110,7 @@ function rotateGrid(grid) {
 
 // One "Move"
 function keyPressed() {
-  console.log(keyCode);
+  // console.log(keyCode);
   let flipped = false;
   let rotated = false;
   let played = true;
@@ -90,7 +122,9 @@ function keyPressed() {
   } else if (keyCode === RIGHT_ARROW || keyCode === 68) {
     grid = rotateGrid(grid);
     rotated = true;
-  } else if (keyCode === LEFT_ARROW || keyCode === 65) {
+  } else if (keyCode === LEFT_ARROW
+     // || keyCode === 65
+   ) {
     grid = rotateGrid(grid);
     grid = flipGrid(grid);
     rotated = true;
@@ -119,6 +153,16 @@ function keyPressed() {
     if (changed) {
       addNumber();
     }
+    updateCanvas();
+
+    let gameover = isGameOver();
+    if (gameover) {
+      console.log("Game Over");
+    }
+    let gamewon = isGameWon();
+    if (gamewon) {
+      console.log("You Win!");
+    }
   }
 }
 
@@ -129,7 +173,7 @@ function operate(row) {
   return row;
 }
 
-function draw() {
+function updateCanvas() {
   background(255);
   drawGrid();
   select('#score').html(score);
@@ -165,15 +209,21 @@ function drawGrid() {
     for (let j = 0; j < 4; j++) {
       noFill();
       strokeWeight(2);
-      stroke(0);
-      rect(i * w, j * w, w, w);
       let val = grid[i][j];
+      let s = val.toString();
+      stroke(0);
+      if (val !== 0) {
+        fill(sizesColors[s].color);
+      } else {
+        noFill();
+      }
+      rect(i * w, j * w, w, w);
       if (grid[i][j] !== 0) {
         textAlign(CENTER, CENTER);
-        textSize(64);
-        fill(0);
+        // fill(0);
         noStroke();
-        // text(i + "," + j, i * w + w / 2, j * w + w / 2);
+        textSize(sizesColors[s].size);
+        // textSize(64);
         text(val, i * w + w / 2, j * w + w / 2);
       }
     }
