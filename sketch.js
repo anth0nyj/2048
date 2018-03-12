@@ -220,7 +220,7 @@ function drawGrid() {
       rect(i * w, j * w, w, w);
       if (grid[i][j] !== 0) {
         textAlign(CENTER, CENTER);
-        // fill(0);
+        fill(0);
         noStroke();
         textSize(sizesColors[s].size);
         // textSize(64);
