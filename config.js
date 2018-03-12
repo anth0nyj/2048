@@ -49,18 +49,18 @@ let sizesColors = {
   },
   "8192": {
     size: 30,
-    color: "#000000"
+    color: "#250041"
   },
   "16384": {
     size: 28,
-    color: "#000000"
+    color: "#451571"
   },
   "32768": {
     size: 28,
-    color: "#000000"
+    color: "#3F0000"
   },
   "65536": {
     size: 28,
-    color: "#000000"
+    color: "#3F2900"
   }
 }
